@@ -1,0 +1,99 @@
+package db;
+
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author williamsalazar
+ */
+public class ConexionDB {
+    
+// Configuracion de la conexion a la base de datos;
+//creando atributos
+private String DB_driver;
+private String url ;
+private String username;
+private String password;
+private String host;
+private Connection con;
+private Statement stmt;
+private ResultSet rs;
+
+//creación de constructor
+
+    public ConexionDB() {
+        
+        DB_driver = "com.mysql.jdbc.Driver";
+        db = "s23";
+        host = "localhost:3306";
+        username = "root";
+        password = "root";
+        url = "jdbc:mysql://" + host + "/" + db;
+        
+        //Asignación de conexión de conexión
+        
+        try {
+        //Asignación del Driver
+            Class.forName(DB_driver);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex); 
+        }
+        try {
+        // Realizar la conexion
+            con = DriverManager.getConnection(url, username, password); 
+            con.setTransactionIsolation(8); 
+            System.out.println("BD conectado");
+        } catch (SQLException ex) { 
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
+        }
+// Realizar la conexión
+    }
+
+    //Retornar la conexión
+    public Connection getConnection() {
+        try{
+            con.setAutoCommit(true);
+            return con; 
+        }catch{SQLException ex}{
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+          
+    }
+    //Cerrar la conexión
+    public void closeConnection(Connection con) {
+           try {
+               con.close();
+           } catch (SQLException ex) {
+                Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+           }
+        }   
+    
+    public boolean committDB(){
+        try{
+            con.commit();
+            return true;
+        } catch (SQLException ex) {
+                Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+        }
+    }
+    
+    public boolean rollbackDB(){
+        try{
+            con.rollback();
+            return true;
+        } catch (SQLException ex) {
+                Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+        }
+    }
+}
+
+
+
