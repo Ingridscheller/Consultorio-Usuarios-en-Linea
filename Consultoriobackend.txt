@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConexionDB {
-    
+
     private String DB_driver;
     private String url;
     private String db;
@@ -19,63 +19,150 @@ public class ConexionDB {
     private Connection con;
     private Statement stmt;
     private ResultSet rs;
-            
-    public ConexionDB(){
-        DB_driver= "com.mysql.jdbc.Driver";
+
+    public ConexionDB() {
+        DB_driver = "com.mysql.jdbc.Driver";
         db = "consultorio en linea";
         host = "localhost:3306";
         username = "root";
-        password = "root";
-        url = "jdbc:mysql://"+ host + "/" + db;
-     
-        
-        try{
+        password = "R1nr1nr3nacuajo*";
+        url = "jdbc:mysql://" + host + "/" + db;
+
+        try {
             Class.forName(DB_driver);
-        }catch(ClassNotFoundException ex){
-            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try{
+        try {
             con = DriverManager.getConnection(url, username, password);
             con.setTransactionIsolation(8);
             System.out.println("BD conectada");
-        }catch(SQLException ex){
-            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public Connection getconnection(){
-         try{
+
+    public Connection getconnection() {
+        try {
             con.setAutoCommit(true);
             return con;
-         }catch(SQLException ex){
-            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
-    public void closeConnection(Connection con){
-         try{
+
+    public void closeConnection(Connection con) {
+        try {
             con.close();
-         }catch(SQLException ex){
-            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
-            
-        }     
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
     }
-    
-    public boolean commitDB(){
-         try{
+
+    public boolean commitDB() {
+        try {
             con.commit();
             return true;
-         }catch(SQLException ex){
-            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
-            return false;            
-        } 
-    }    
-     public boolean rollbackDB(){
-         try{
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public boolean rollbackDB() {
+        try {
             con.rollback();
             return true;
-         }catch(SQLException ex){
-            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
-            return false;            
-        }     
-}         
-}           
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+
+    }
+
+    public ResultSet consultar(String nombreTabla) {
+        String query = " SELECT * FROM " + nombreTabla;
+        try {
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = stmt.executeQuery(query);
+            return rs;
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (RuntimeException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (Exception ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        
+    public ResultSet consultarVista(String nombreTabla){
+        String query = " SELECT * FROM vista" + nombreTabla;
+        try {
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = stmt.executeQuery(query);
+            return rs;
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (RuntimeException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (Exception ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }    
+    }
+
+    public ResultSet consultarXId(String nombreTabla, int id) {
+        String query = " SELECT * FROM " + nombreTabla + "WHERE id" + nombreTabla + "=" + id;
+        try {
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = stmt.executeQuery(query);
+            return rs;
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (RuntimeException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (Exception ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public ResultSet consultarWhere(String nombreTabla, String condiciones) {
+        String query = " SELECT * FROM " + nombreTabla + "WHERE " + condiciones;
+        try {
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = stmt.executeQuery(query);
+            return rs;
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (RuntimeException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (Exception ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+    public void insertar(String nombreTabla, String[]columnas, String[] valores){
+        String query= "INSERT INTO"+nombreTabla;
+        try {
+            stmt = con.createStatement();
+            stmt.execute(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RuntimeException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+}
